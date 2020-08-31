@@ -1,34 +1,51 @@
 
-import discord, sys, re
+import discord, sys, re, os
 from commands import *
 
 if len(sys.argv) != 2 :
-    print('python bot.py <TOKEN.txt>')
+    print("python bot.py <TOKEN.txt>")
     sys.exit(1)
 
 client = discord.Client()
+
+textFiles = os.listdir("./pasta")
+commandFiles = os.listdir("./commands")
+if "__init__.py" in commandFiles:
+    del commandFiles[commandFiles.index("__init__.py")]
+
+if "__pycache__" in commandFiles:
+    del commandFiles[commandFiles.index("__pycache__")]
+
+for i in range(len(commandFiles)):
+    fileName = commandFiles[i]
+    commandFiles[i] = fileName[0:len(fileName)-3:1]
+
+for i in range(len(textFiles)):
+    fileName = textFiles[i]
+    textFiles[i] = fileName[0:len(fileName)-4:1]
+
 
 @client.event
 async def on_message(message):
     print('\t' + message.author.display_name + ":\n" + message.content)
 
     #commands
-    if (message.content.startswith('$')):
+    if message.content.startswith("$"):
         command = message.content[1:len(message.content):1]
-        if(re.match("^[a-zA-Z_]+$", command)):
+        if command in commandFiles:
             try:
-                await eval(command + '.' + command + '(message)')
+                await eval(command + '.' + command + "(message)")
             except:
                 pass
         else:
-            print('invalid command : ' + command)
+            print("invalid command : " + command)
     #text
-    elif (message.content.startswith('!')):
+    elif message.content.startswith('!'):
         command = message.content[1:len(message.content):1]
-        if(re.match("^[0-9a-zA-Z_]+$", command)):
+        if command in textFiles:
             try:
                 await message.delete()
-                f = open('pasta/' + command + '.txt', 'r', encoding='utf-8')
+                f = open("pasta/" + command + ".txt", 'r', encoding="utf-8")
                 await message.channel.send(f.read())
                 f.close()
             except:
