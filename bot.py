@@ -10,7 +10,7 @@ client = discord.Client()
 
 @client.event
 async def on_message(message):
-    print(message.author.display_name + ":\n\t" + message.content)
+    print('\t' + message.author.display_name + ":\n" + message.content)
 
     #commands
     if (message.content.startswith('$')):
@@ -25,7 +25,7 @@ async def on_message(message):
     #text
     elif (message.content.startswith('!')):
         command = message.content[1:len(message.content):1]
-        if(re.match("^[a-zA-Z_]+$", command)):
+        if(re.match("^[0-9a-zA-Z_]+$", command)):
             try:
                 await message.delete()
                 f = open('pasta/' + command + '.txt', 'r', encoding='utf-8')
