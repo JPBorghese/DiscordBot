@@ -39,8 +39,8 @@ async def help(stuff):
       #type = "rich"
     )
 
-    embed.add_field(name="Pasta", value=texts, inline=True)
-    embed.add_field(name="Commands", value=cmds, inline=True)
+    embed.add_field(name="🍝 Pasta 🍝", value=texts, inline=True)
+    embed.add_field(name="🤖 Commands 🤖", value=cmds, inline=True)
     #embed.add_field(name="Field Name", value="Field content!!!", inline=True)
 
     await stuff["message"].channel.send(embed=embed)
