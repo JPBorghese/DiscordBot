@@ -5,7 +5,7 @@ async def help(stuff):
     counter = 0
     wordSpace = 16
 
-    cmds = "```"
+    cmds = "**```"
     for x in stuff["commandFiles"]:
         cmds += "$" + x
         counter += 1
@@ -16,9 +16,9 @@ async def help(stuff):
             for i in range(wordSpace - len(x)):
                 cmds += ' '
 
-    cmds += "```"
+    cmds += "```**"
 
-    texts = "```"
+    texts = "**```"
     counter = 0
 
     for x in stuff["textFiles"]:
@@ -30,13 +30,13 @@ async def help(stuff):
         else:
             for i in range(wordSpace - len(x)):
                 texts += ' '
-    texts += "```"
+    texts += "```**"
 
     embed = discord.Embed(
       title = "$Help",
       color = 0xff9933,
       description = "",
-      type = "rich"
+      #type = "rich"
     )
 
     embed.add_field(name="Pasta", value=texts, inline=True)
