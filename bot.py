@@ -42,15 +42,19 @@ async def on_message(message):
     print('\t' + message.author.display_name + ":\n" + message.content)
 
     if message.channel.id in allowedChannels and not message.author.bot:
+
         #commands
         if message.content.startswith("$"):
-            command = message.content[1:len(message.content):1]
+            command = message.content.split()[0][1:]
+            #command = message.content[1:len(message.content):1]
             if command in commandFiles:
                 try:
                     stuff["message"] = message
                     await eval(command + '.' + command + "(stuff)")
                 except:
                     pass
+
+                await message.delete(delay = .01)
             else:
                 print("invalid command : " + command)
         #text
