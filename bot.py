@@ -10,8 +10,6 @@ if len(sys.argv) != 2 :
 
 client = discord.Client()
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-
 textFiles = os.listdir("./pasta")
 commandFiles = os.listdir("./commands")
 
@@ -31,12 +29,6 @@ for i in range(len(textFiles)):
 
 allowedChannels = [749388765717332019]
 
-stuff = {
-"message": "",
-"textFiles": textFiles,
-"commandFiles": commandFiles
-}
-
 @client.event
 async def on_message(message):
     print('\t' + message.author.display_name + ":\n" + message.content)
@@ -46,11 +38,10 @@ async def on_message(message):
         #commands
         if message.content.startswith("$"):
             command = message.content.split()[0][1:]
-            #command = message.content[1:len(message.content):1]
+            
             if command in commandFiles:
                 try:
-                    stuff["message"] = message
-                    await eval(command + '.' + command + "(stuff)")
+                    await eval(command + '.' + command + "(message)")
                 except:
                     pass
 

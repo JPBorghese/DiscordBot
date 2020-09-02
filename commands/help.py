@@ -1,12 +1,29 @@
-import discord
+import discord, os
 
-async def help(stuff):
+async def help(message):
+
+    textFiles = os.listdir("./pasta")
+    commandFiles = os.listdir("./commands")
+
+    if "__init__.py" in commandFiles:
+        del commandFiles[commandFiles.index("__init__.py")]
+
+    if "__pycache__" in commandFiles:
+        del commandFiles[commandFiles.index("__pycache__")]
+
+    for i in range(len(commandFiles)):
+        fileName = commandFiles[i]
+        commandFiles[i] = fileName[0:len(fileName)-3:1]
+
+    for i in range(len(textFiles)):
+        fileName = textFiles[i]
+        textFiles[i] = fileName[0:len(fileName)-4:1]
 
     counter = 0
     wordSpace = 16
 
     cmds = "**```"
-    for x in stuff["commandFiles"]:
+    for x in commandFiles:
         cmds += "$" + x
         counter += 1
 
@@ -21,7 +38,7 @@ async def help(stuff):
     texts = "**```"
     counter = 0
 
-    for x in stuff["textFiles"]:
+    for x in textFiles:
         texts += "!" + x
         counter += 1
 
@@ -43,4 +60,4 @@ async def help(stuff):
     embed.add_field(name="🤖 Commands 🤖", value=cmds, inline=True)
     #embed.add_field(name="Field Name", value="Field content!!!", inline=True)
 
-    await stuff["message"].channel.send(embed=embed)
+    await message.channel.send(embed=embed)
