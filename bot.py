@@ -38,10 +38,10 @@ async def on_message(message):
         #commands
         if message.content.startswith("$"):
             command = message.content.split()[0][1:]
-            
+
             if command in commandFiles:
                 try:
-                    await eval(command + '.' + command + "(message)")
+                    await eval(command + '.' + command + "(message, client)")
                 except:
                     pass
 

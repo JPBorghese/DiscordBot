@@ -1,3 +1,3 @@
 
-async def slap(message):
+async def slap(message, client):
     pass

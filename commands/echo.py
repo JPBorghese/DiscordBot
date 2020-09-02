@@ -1,5 +1,5 @@
 
-async def echo(message):
+async def echo(message, client):
     messageArray = message.content.split()
     if len(messageArray) > 1:
         botMessage = ""

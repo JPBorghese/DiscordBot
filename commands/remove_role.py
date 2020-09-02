@@ -1,5 +1,5 @@
 
-async def remove_role(message):
+async def remove_role(message, client):
 
     #check if there are at least 2 'tokens' in command
     if len(message.content.split()) > 1:

@@ -1,6 +1,6 @@
 import discord, os
 
-async def help(message):
+async def help(message, client):
 
     textFiles = os.listdir("./pasta")
     commandFiles = os.listdir("./commands")
