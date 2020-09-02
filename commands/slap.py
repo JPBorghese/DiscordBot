@@ -1,25 +1,24 @@
 
-#todo: fix it so that the syntax is, $slap @mention
 
 async def slap(message, client):
-
     messageArray = message.content.split()
+
     #check more than 1 'token'
     if len(messageArray) == 2:
-        otherName = messageArray[1]
+        mentions = message.mentions
 
-        #find noob's member object
-        users = message.guild.members
+        #format output string
+        if len(mentions) > 0:
+            botMessage = message.author.mention + " slapped"
+            for i in range(len(mentions)):
+                if len(mentions) == 1:
+                    botMessage += " "
+                elif i == len(mentions) - 1:
+                    botMessage += " and "
+                elif i != 0:
+                    botMessage += ", "
 
-        otherObject = None
-        for i in range(len(users)):
-            print(users[i].display_name)
-            if otherName == users[i].display_name:
-                otherObject = users[i]
-                print(otherObject)
-                break
+            botMessage += mentions[i].mention + " in the face!"
 
-        if otherObject != None:
-            botMessage = message.author.mention + " slapped "
-            botMessage += otherObject.mention + " in the face!"
             await message.channel.send(botMessage)
+
