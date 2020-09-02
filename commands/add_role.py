@@ -7,11 +7,13 @@ async def add_role(message, client):
         roles = message.channel.guild.roles
         added = False
 
+        #check if role exists
         for role in roles:
             if role.name == newRole:
                 await message.author.add_roles(role)
                 added = True
                 break
 
+        #send error message if failed
         if not added:
             await message.channel.send("Invalid Role: " + newRole)

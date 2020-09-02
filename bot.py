@@ -10,15 +10,18 @@ if len(sys.argv) != 2 :
 
 client = discord.Client()
 
+#get all txt and py files
 textFiles = os.listdir("./pasta")
 commandFiles = os.listdir("./commands")
 
+#remove unwanted file
 if "__init__.py" in commandFiles:
     del commandFiles[commandFiles.index("__init__.py")]
 
 if "__pycache__" in commandFiles:
     del commandFiles[commandFiles.index("__pycache__")]
 
+#remove file extensions
 for i in range(len(commandFiles)):
     fileName = commandFiles[i]
     commandFiles[i] = fileName[0:len(fileName)-3:1]
@@ -27,6 +30,7 @@ for i in range(len(textFiles)):
     fileName = textFiles[i]
     textFiles[i] = fileName[0:len(fileName)-4:1]
 
+#set allowed channels
 allowedChannels = [749388765717332019]
 
 @client.event

@@ -7,11 +7,13 @@ async def remove_role(message, client):
         roles = message.channel.guild.roles
         deleted = False
 
+        #check if role exists
         for role in roles:
             if role.name == newRole:
                 await message.author.remove_roles(role)
                 deleted = True
                 break
 
+        #send error message if failed
         if not deleted:
             await message.channel.send("Invalid Role: " + newRole)

@@ -2,6 +2,7 @@ import discord, os
 
 async def help(message, client):
 
+    #get the names of all valid text and command files
     textFiles = os.listdir("./pasta")
     commandFiles = os.listdir("./commands")
 
@@ -19,6 +20,7 @@ async def help(message, client):
         fileName = textFiles[i]
         textFiles[i] = fileName[0:len(fileName)-4:1]
 
+    #configure string
     counter = 0
     wordSpace = 16
 
@@ -49,6 +51,7 @@ async def help(message, client):
                 texts += ' '
     texts += "```**"
 
+    #create and print embed
     embed = discord.Embed(
       title = "$Help",
       color = 0xff9933,
