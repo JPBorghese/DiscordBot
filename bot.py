@@ -1,3 +1,7 @@
+#help command name
+#change prints to embeds
+#tock tack toe
+#connect 4
 
 import discord, sys, re, os
 from commands import *
@@ -44,11 +48,7 @@ async def on_message(message):
             command = message.content.split()[0][1:]
 
             if command in commandFiles:
-                try:
-                    await eval(command + '.' + command + "(message, client)")
-                except:
-                    pass
-
+                await eval(command + '.' + command + "(message, client)")
                 await message.delete(delay = .01)
             else:
                 print("invalid command : " + command)
@@ -57,9 +57,14 @@ async def on_message(message):
             command = message.content[1:len(message.content):1]
             if command in textFiles:
                 try:
-                    await message.delete()
+                    await message.delete(delay = .01)
                     f = open("pasta/" + command + ".txt", 'r', encoding="utf-8")
-                    await message.channel.send(f.read())
+                    embed = discord.Embed(
+                        title="",
+                        color = 0xff9933,
+                        description = f.read()
+                    )
+                    await message.channel.send(embed=embed)
                     f.close()
                 except:
                     pass
@@ -67,6 +72,7 @@ async def on_message(message):
 @client.event
 async def on_reaction_add(reaction, user):
     if (reaction.message.channel.id == 749388765717332019):
-        await reaction.message.channel.send(reaction.emoji)
+        #await reaction.message.channel.send(reaction.emoji)
+        pass
 
 client.run(open(sys.argv[1], 'r').read())

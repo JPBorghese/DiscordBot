@@ -8,7 +8,7 @@ has_reaction_callback = False
 running_data = []
 
 async def rps(message, client):
-	global running_ids
+	global running_data
 	global has_reaction_callback
 	if has_reaction_callback == False:
 		@client.event
