@@ -54,7 +54,8 @@ def checkWon(arr, w, h, id, x, y):
     return False
 
 
-
+async def on_reaction_remove(reaction, user):
+    await on_reaction_add(reaction, user)
 
 async def on_reaction_add(reaction, user):
     global data
@@ -80,7 +81,7 @@ async def on_reaction_add(reaction, user):
 
                 #change whose turn it is
                 if boardChanged:
-                    playerNum = d[2] + 1
+                    playerNum = d[2]
                     # update players turn
                     d[2] += 1
                     if d[2] >= len(d[1]):
@@ -90,14 +91,14 @@ async def on_reaction_add(reaction, user):
                     embed = discord.Embed(
                         title = "Connect Four",
                         color = 0xff9933,
-                        description = getStringArray(d[3], d[4], d[5])  + "\n\n **Current Turn:** " + d[7][playerNum - 1]
+                        description = getStringArray(d[3], d[4], d[5])  + "\n\n **Current Turn:** " + d[7][d[2]]
                     )
 
                     await reaction.message.edit(embed=embed)
 
                     #check winning
-                    if checkWon(d[3], d[4], d[5], playerNum, posx, posy):
-                        await reaction.message.channel.send("**" + d[7][d[2]] + "** won!")
+                    if checkWon(d[3], d[4], d[5], playerNum + 1, posx, posy):
+                        await reaction.message.channel.send("**" + d[7][playerNum] + "** won!")
                         data.remove(d)
                         return
 
@@ -106,6 +107,7 @@ async def connect4(message, client):
     if not first:
         firsr = True
         client.event(on_reaction_add)
+        client.event(on_reaction_remove)
 
     #width <= 10
     width = 7
