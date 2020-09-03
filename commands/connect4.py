@@ -68,6 +68,11 @@ def checkWon(arr, w, h, id, x, y):
         return [x - l, y - l, 3]   #top left
     return None
 
+async def on_message_delete(message):
+    global data
+    for d in data:
+        if message.id == d[0]:
+            data.remove(d)
 
 async def on_reaction_remove(reaction, user):
     await on_reaction_add(reaction, user)
@@ -162,6 +167,7 @@ async def connect4(message, client):
         firsr = True
         client.event(on_reaction_add)
         client.event(on_reaction_remove)
+        client.event(on_message_delete)
 
     #width <= 10
     width = 7

@@ -1,7 +1,6 @@
 #help command name
 #change prints to embeds
 #tock tack toe
-#connect 4
 
 import discord, sys, re, os
 from commands import *
