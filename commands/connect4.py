@@ -1,5 +1,5 @@
 
-#⚪🔴🔵
+#⚪🔴🔵🟡
 #add custom board size
 
 import discord
@@ -11,6 +11,9 @@ def getStringArray(arr, w, h):
     empty = "⚪"
     red = "🔴"
     blue = "🔵"
+    win = "🟡"
+
+    winning = False
 
     board = ""
     for y in range(h):
@@ -19,10 +22,15 @@ def getStringArray(arr, w, h):
                 board += red
             elif arr[x][y] == 2:
                 board += blue
+            elif arr[x][y] == -1:
+                board += win
+                winning = True
             else:
                 board += empty
         board += "\n"
-    board += ":one::two::three::four::five::six::seven:"
+
+    if not winning:
+        board += ":one::two::three::four::five::six::seven:"
 
     return board
 
@@ -40,18 +48,25 @@ def checkWon(arr, w, h, id, x, y):
             new_y += y_spd
         return count
 
+    # return the left/up most coordinate and direction if won and None otherwise
+    # 7 ^ 9
+    # < 5 >
+    # 1 v 3
+
     if check_dir(1, 0) + check_dir(-1, 0) >= 3:
-        return True
+        return [x - check_dir(-1, 0), y, 6] #left
 
     if check_dir(0, 1) + check_dir(0, -1) >= 3:
-        return True
+        return [x, y - check_dir(0, -1), 2] #top
 
     if check_dir(1, -1) + check_dir(-1, 1) >= 3:
-        return True
+        l = check_dir(-1, 1)
+        return [x - l, y + l, 9]    #bottom left
 
     if check_dir(1, 1) + check_dir(-1, -1) >= 3:
-        return True
-    return False
+        l = check_dir(-1, -1)
+        return [x - l, y - l, 3]   #top left
+    return None
 
 
 async def on_reaction_remove(reaction, user):
@@ -72,7 +87,7 @@ async def on_reaction_add(reaction, user):
                 boardChanged = False
 
                 #find first y thats not 0
-                for y in range(d[5] - 1, 0, -1):
+                for y in range(d[5] - 1, -1, -1):
                     if d[3][posx][y] == 0:
                         d[3][posx][y] = d[2] + 1
                         posy = y
@@ -88,18 +103,57 @@ async def on_reaction_add(reaction, user):
                         d[2] = 0
 
                     #print new board
-                    embed = discord.Embed(
+                    embed1 = discord.Embed(
                         title = "Connect Four",
                         color = 0xff9933,
-                        description = getStringArray(d[3], d[4], d[5])  + "\n\n **Current Turn:** " + d[7][d[2]]
+                        description = "<@" + str(d[1][0]) + "> vs <@" + str(d[1][1]) + ">\n\n" + getStringArray(d[3], d[4], d[5])  + "\n\n **Current Turn:** " + d[7][d[2]]
                     )
 
-                    await reaction.message.edit(embed=embed)
-
                     #check winning
-                    if checkWon(d[3], d[4], d[5], playerNum + 1, posx, posy):
-                        await reaction.message.channel.send("**" + d[7][playerNum] + "** won!")
+                    status = checkWon(d[3], d[4], d[5], playerNum + 1, posx, posy)
+                    if status != None:
+
+                        #set new array values
+                        xx = status[0]
+                        yy = status[1]
+                        wid = d[3][xx][yy]
+                        dir = status[2]
+
+                        if dir == 2:
+                            while yy < d[5] and d[3][xx][yy] == wid:
+                                d[3][xx][yy] = -1
+                                yy += 1
+                        elif dir == 6:
+                            while xx < d[4] and d[3][xx][yy] == wid:
+                                d[3][xx][yy] = -1
+                                xx += 1
+                        elif dir == 3:
+                            while xx < d[4] and yy < d[5] and d[3][xx][yy] == wid:
+                                d[3][xx][yy] = -1
+                                xx += 1
+                                yy += 1
+                        elif dir == 9:
+                            while xx < d[4] and yy >= 0 and d[3][xx][yy] == wid:
+                                d[3][xx][yy] = -1
+                                xx += 1
+                                yy -= 1
+                        else:
+                            print("Connect4.checkWon(): invalid direction output")
+
+
+                        des = getStringArray(d[3], d[4], d[5])
+
+                        embed2 = discord.Embed(
+                            title = d[7][playerNum] + " won!",
+                            color = 0xff9933,
+                            description = des + "\n\nEz Clap."
+                        )
                         data.remove(d)
+                        await reaction.message.channel.send(embed=embed2)
+
+                    await reaction.message.edit(embed=embed1)
+
+                    if status != None:
                         return
 
 async def connect4(message, client):
@@ -116,16 +170,21 @@ async def connect4(message, client):
 
     arr = [[0 for y in range(height)] for x in range(width)]
 
+    if len(message.mentions) == 0:
+        return
+
+    player2 = message.mentions[0]
+
     embed = discord.Embed(
         title = "Connect Four",
         color = 0xff9933,
-        description = getStringArray(arr, width, height) + "\n\n **Current Turn:** " + message.author.display_name
+        description = message.author.mention + " vs " + player2.mention + "\n\n" + getStringArray(arr, width, height) + "\n\n **Current Turn:** " + message.author.display_name
     )
 
     msg = await message.channel.send(embed=embed)
 
-    players = [message.author.id, message.mentions[0].id]
-    names = [message.author.display_name, message.mentions[0].display_name]
+    players = [message.author.id, player2.id]
+    names = [message.author.display_name, player2.display_name]
     whoseTurn = 0
 
     data.append([msg.id, players, whoseTurn, arr, width, height, client.user.id, names])
