@@ -56,18 +56,15 @@ async def on_message(message):
         elif message.content.startswith('!'):
             command = message.content[1:len(message.content):1]
             if command in textFiles:
-                try:
-                    await message.delete(delay = .01)
-                    f = open("pasta/" + command + ".txt", 'r', encoding="utf-8")
-                    embed = discord.Embed(
-                        title="",
-                        color = 0xff9933,
-                        description = f.read()
-                    )
-                    await message.channel.send(embed=embed)
-                    f.close()
-                except:
-                    pass
+                await message.delete(delay = .01)
+                f = open("pasta/" + command + ".txt", 'r', encoding="utf-8")
+                embed = discord.Embed(
+                    title="",
+                    color = 0xff9933,
+                    description = f.read()
+                )
+                await message.channel.send(embed=embed)
+                f.close()
 
 @client.event
 async def on_reaction_add(reaction, user):
