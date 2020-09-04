@@ -4,8 +4,8 @@
 
 import discord
 
-data = []
-first = False
+connect_data = []
+connect_first = False
 
 def getStringArray(arr, w, h):
     empty = "⚪"
@@ -69,18 +69,18 @@ def checkWon(arr, w, h, id, x, y):
     return None
 
 async def on_message_delete(message):
-    global data
-    for d in data:
+    global connect_data
+    for d in connect_data:
         if message.id == d[0]:
-            data.remove(d)
+            connect_data.remove(d)
 
 async def on_reaction_remove(reaction, user):
     await on_reaction_add(reaction, user)
 
 async def on_reaction_add(reaction, user):
-    global data
+    global connect_data
 
-    for d in data:
+    for d in connect_data:
         #check if the correct person reacted
         if user.id == d[1][d[2]]:
             #check that the reaction is for the correct board
@@ -111,7 +111,7 @@ async def on_reaction_add(reaction, user):
                     embed1 = discord.Embed(
                         title = "Connect Four",
                         color = 0xff9933,
-                        description = "<@" + str(d[1][0]) + "> vs <@" + str(d[1][1]) + ">\n\n" + getStringArray(d[3], d[4], d[5])  + "\n\n **Current Turn:** " + d[7][d[2]]
+                        description = "<@" + str(d[1][0]) + "> vs <@" + str(d[1][1]) + ">\n\n" + getStringArray(d[3], d[4], d[5])  + "\n\n **Current Turn:** " + d[6][d[2]]
                     )
 
                     #check winning
@@ -149,11 +149,11 @@ async def on_reaction_add(reaction, user):
                         des = getStringArray(d[3], d[4], d[5])
 
                         embed2 = discord.Embed(
-                            title = d[7][playerNum] + " won!",
+                            title = d[6][playerNum] + " won!",
                             color = 0xff9933,
                             description = des + "\n\nEz Clap."
                         )
-                        data.remove(d)
+                        connect_data.remove(d)
                         await reaction.message.channel.send(embed=embed2)
 
                     await reaction.message.edit(embed=embed1)
@@ -162,9 +162,9 @@ async def on_reaction_add(reaction, user):
                         return
 
 async def connect4(message, client):
-
-    if not first:
-        firsr = True
+    global connect_first
+    if not connect_first:
+        connect_first = True
         client.event(on_reaction_add)
         client.event(on_reaction_remove)
         client.event(on_message_delete)
@@ -187,13 +187,12 @@ async def connect4(message, client):
         description = message.author.mention + " vs " + player2.mention + "\n\n" + getStringArray(arr, width, height) + "\n\n **Current Turn:** " + message.author.display_name
     )
 
-    msg = await message.channel.send(embed=embed)
-
     players = [message.author.id, player2.id]
     names = [message.author.display_name, player2.display_name]
-    whoseTurn = 0
 
-    data.append([msg.id, players, whoseTurn, arr, width, height, client.user.id, names])
+    msg = await message.channel.send(embed=embed)
+
+    connect_data.append([msg.id, players, 0, arr, width, height, names])
 
     await msg.add_reaction("1️⃣")
     await msg.add_reaction("2️⃣")

@@ -47,8 +47,8 @@ async def on_message(message):
             command = message.content.split()[0][1:]
 
             if command in commandFiles:
-                await eval(command + '.' + command + "(message, client)")
                 await message.delete(delay = .01)
+                await eval(command + '.' + command + "(message, client)")
             else:
                 print("invalid command : " + command)
         #text
