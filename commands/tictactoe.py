@@ -36,7 +36,11 @@ def isWin(arr, w, h, id):
         if id == _id:
             temp |= 2 ** index
         index += 1
-    return (temp & 7) == 7 or (temp & 273) == 273 or (temp & 73) == 73 or (temp & 292) == 292 or (temp & 448) == 448 or (temp & 84) == 84
+    vals = [0x111000000, 0x100010001, 0x100100100, 0x001001001, 0x000000111, 0x001010100]
+    for v in vals:
+        if (temp & v) == v:
+            return True
+    return False
 
 def getStringArray(arr):
     ex = '❌'
