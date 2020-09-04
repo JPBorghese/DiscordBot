@@ -1,7 +1,7 @@
 #help command name
 #change prints to embeds
 #tock tack toe
-
+#hangman
 import discord, sys, re, os
 from commands import *
 
@@ -34,7 +34,7 @@ for i in range(len(textFiles)):
     textFiles[i] = fileName[0:len(fileName)-4:1]
 
 #set allowed channels
-allowedChannels = [749388765717332019]
+allowedChannels = [749388765717332019, 751227509168668762]
 
 @client.event
 async def on_message(message):

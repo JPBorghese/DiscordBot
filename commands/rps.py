@@ -77,11 +77,11 @@ async def rps(message, client):
 
 		type = None
 		stuff = content.split()
-		if "rock" in stuff:
+		if ("rock" in stuff) or ("r" in stuff):
 			type = "🌚"
-		elif "paper" in stuff:
+		elif ("paper" in stuff) or ("p" in stuff):
 			type = "📰"
-		elif "scissors" in stuff:
+		elif ("scissors" in stuff) or ("s" in stuff):
 			type = "✂"
 		else:
 			await channel.send("Please include either rock, paper, or scissors in your message!")
