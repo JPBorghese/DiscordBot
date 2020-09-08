@@ -28,15 +28,15 @@ def getEmojiNum(x):
 
     return output
 
-#shit might be fucked, never tested
-def isWin(arr, w, h, id):
+def isWin(arr, id):
     temp = 0
     index = 0
-    for _id in arr:
-        if id == _id:
-            temp |= 2 ** index
-        index += 1
-    vals = [0x111000000, 0x100010001, 0x100100100, 0x001001001, 0x000000111, 0x001010100]
+    for y in range(3):
+        for x in range(3):
+            if arr[x][y] == id:
+                temp |= 2 ** index
+            index += 1
+    vals = [0b000000111, 0b000111000, 0b111000000, 0b001001001,  0b010010010, 0b100100100, 0b100010001, 0b001010100]
     for v in vals:
         if (temp & v) == v:
             return True
@@ -76,7 +76,6 @@ async def on_reaction_remove(reaction, user):
 async def on_reaction_add(reaction, user):
     global tic_data
 
-    print('reacted')
     #check corrct message and person reacting
     for d in tic_data:
         if user.id == d[1][d[2]]:
@@ -92,6 +91,7 @@ async def on_reaction_add(reaction, user):
                     boardChanged = True
 
                 if boardChanged:
+                    currentPlayer = d[2]
                     # change turn
                     d[2] += 1
                     if d[2] >= len(d[1]):
@@ -105,8 +105,21 @@ async def on_reaction_add(reaction, user):
                         description = "<@" + str(d[1][0]) + "> vs <@" + str(d[1][1]) + ">\n\n" + getStringArray(d[3])  + "\n\n **Current Turn:** " + d[5][d[2]]
                     )
 
-                    print('b')
+                    isDone = False
+                    #check if player won
+                    if isWin(d[3], currentPlayer):
+                        embed2 = discord.Embed(
+                            title = "",
+                            color = 0xff9933,
+                            description = "<@" + str(d[1][d[2]]) + "> wins!"
+                        )
+                        tic_data.remove(d)
+                        isDone = True
+                        await reaction.message.channel.send(embed=embed2)
                     await reaction.message.edit(embed=embed1)
+
+                    if isDone:
+                        return
 
 async def tictactoe(message, client):
     global tic_first
