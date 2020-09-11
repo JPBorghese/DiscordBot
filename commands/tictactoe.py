@@ -42,6 +42,13 @@ def isWin(arr, id):
             return True
     return False
 
+def isTie(arr):
+    for y in range(3):
+        for x in range(3):
+            if arr[x][y] == -1:
+                return False
+    return True
+
 def getStringArray(arr):
     ex = '❌'
     oh = '⭕'
@@ -74,6 +81,7 @@ async def on_reaction_remove(reaction, user):
     await on_reaction_add(reaction, user)
 
 async def on_reaction_add(reaction, user):
+    print("reacted")
     global tic_data
 
     #check corrct message and person reacting
@@ -106,7 +114,9 @@ async def on_reaction_add(reaction, user):
                     )
 
                     isDone = False
-                    #check if player won
+                    #check if game is over
+                    embed2 = None
+
                     if isWin(d[3], currentPlayer):
                         embed2 = discord.Embed(
                             title = "",
@@ -115,6 +125,17 @@ async def on_reaction_add(reaction, user):
                         )
                         tic_data.remove(d)
                         isDone = True
+
+                    elif isTie(d[3]):
+                        embed2 = discord.Embed(
+                            title = "",
+                            color = 0xff9933,
+                            description = "It's a tie!"
+                        )
+                        tic_data.remove(d)
+                        isDone = True
+
+                    if embed2 != None:
                         await reaction.message.channel.send(embed=embed2)
                     await reaction.message.edit(embed=embed1)
 
@@ -134,14 +155,6 @@ async def tictactoe(message, client):
 
     arr = [[-1 for y in range(height)] for x in range(width)]
 
-    embed = discord.Embed(
-        title = "",
-        color = 0xff9933,
-        description = getStringArray(arr)
-    )
-
-
-
     if len(message.mentions) == 0:
         return
 
@@ -149,6 +162,13 @@ async def tictactoe(message, client):
 
     players = [message.author.id, player2.id]
     names = [message.author.display_name, player2.display_name]
+
+    # print the board
+    embed = discord.Embed(
+        title = "TicTacToe",
+        color = 0xff9933,
+        description = "<@" + str(message.author.id) + "> vs <@" + str(player2.id) + ">\n\n" + getStringArray(arr)  + "\n\n **Current Turn:** " + names[0]
+    )
 
     msg = await message.channel.send(embed = embed)
 
