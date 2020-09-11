@@ -81,7 +81,6 @@ async def on_reaction_remove(reaction, user):
     await on_reaction_add(reaction, user)
 
 async def on_reaction_add(reaction, user):
-    print("reacted")
     global tic_data
 
     #check corrct message and person reacting

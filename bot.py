@@ -36,7 +36,7 @@ allowedChannels = [749388765717332019, 751227509168668762]
 
 @client.event
 async def on_message(message):
-    print('\t' + message.author.display_name + ":\n" + message.content)
+    #print('\t' + message.author.display_name + ":\n" + message.content)
 
     if message.channel.id in allowedChannels and not message.author.bot:
 
