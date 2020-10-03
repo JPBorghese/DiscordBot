@@ -1,10 +1,14 @@
 
-async def remove_role(message, client):
+async def removerole(message, client):
 
     #check if there are at least 2 'tokens' in command
     if len(message.content.split()) > 1:
-        newRole = message.content.split()[1]
+        newRole = message.content.split()[1].lower()
         roles = message.channel.guild.roles
+
+        for i in range(len(roles)):
+            roles[i].name = roles[i].name.lower();
+
         deleted = False
 
         #check if role exists

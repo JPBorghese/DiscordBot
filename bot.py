@@ -43,7 +43,7 @@ async def on_message(message):
 
         #commands
         if message.content.startswith("$"):
-            command = message.content.split()[0][1:]
+            command = message.content.split()[0][1:].lower()
 
             if command in commandFiles:
                 await message.delete(delay = .01)
@@ -52,7 +52,8 @@ async def on_message(message):
                 print("invalid command : " + command)
         #text
         elif message.content.startswith('!'):
-            command = message.content[1:len(message.content):1]
+            command = message.content[1:len(message.content):1].lower()
+
             if command in textFiles:
                 await message.delete(delay = .01)
                 f = open("pasta/" + command + ".txt", 'r', encoding="utf-8")
